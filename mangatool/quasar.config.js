@@ -33,6 +33,8 @@ module.exports = configure(function (/* ctx */) {
       
       
     ],
+    transpile: ['jquery'], // Füge jQuery zu den zu transpilierenden Modulen hinzu
+  
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: [
@@ -43,7 +45,7 @@ module.exports = configure(function (/* ctx */) {
     extras: [
       // 'ionicons-v4',
       // 'mdi-v5',
-      // 'fontawesome-v6',
+      'fontawesome-v6',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',

@@ -25,6 +25,9 @@
           v-bind="link"
         />
       </q-list>
+      <q-tabs >
+        <q-route-tab to="/manga" name="manga">Go to</q-route-tab>
+      </q-tabs> 
     </q-drawer>
 
     <q-page-container>
@@ -42,37 +45,37 @@ const linksList = [
     title: "Dashboard",
     caption: "Alle Werte zu den Mangas",
     icon: "analytics",
-    link: "https://quasar.dev",
+    link: "/",
   },
   {
     title: "Manga 1",
     caption: "github.com/quasarframework",
     icon: "menu_book",
-    link: "https://github.com/quasarframework",
+    link: "/manga/manga",
   },
   {
     title: "Manga 2",
     caption: "chat.quasar.dev",
     icon: "menu_book",
-    link: "https://chat.quasar.dev",
+    link: "/manga/manga",
   },
   {
     title: "Manga 3",
     caption: "forum.quasar.dev",
     icon: "menu_book",
-    link: "https://forum.quasar.dev",
+    link: "/manga/manga",
   },
   {
     title: "Manga 4",
     caption: "@quasarframework",
     icon: "menu_book",
-    link: "https://twitter.quasar.dev",
+    link: "/manga/manga",
   },
   {
     title: "Manga hinzufügen",
     caption: "",
     icon: "add",
-    link: "https://facebook.quasar.dev",
+    link: "/manga/manga",
   },
   {
     title: "Erschaffen von Leon Wempe",

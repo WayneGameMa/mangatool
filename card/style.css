@@ -1,4 +1,3 @@
-// app global css in SCSS form
 body { background-color: #e9e9e9; }
 
 h1 {
@@ -101,7 +100,7 @@ h1 {
 }
 
 .card.raster {
-    background-image: url('/raster.png');
+    background-image: url(raster.png);
     background-size: cover;
 }
 
@@ -117,7 +116,7 @@ h1 {
 }
 
 .card.bubble {
-    background-image: url('/bubble.png');
+    background-image: url(bubble.png);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -146,7 +145,7 @@ h1 {
 }
 
 .card.story {
-    background-image: url('/story.png');
+    background-image: url(story.png);
     background-size: cover;
     background-position: center;
 }
@@ -187,33 +186,5 @@ h1 {
     margin: -80%;
     color: #ffffff;
 }
-
-.menu {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 2em;
-    width: 100%;
-  }
-  
-  .menu__item {
-    margin-right: 10px;
-  }
-  
-  .page-title {
-    text-align: center;
-    margin-bottom: 2em;
-    width: 100%;
-  }
-  
-  .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .add-card-btn {
-    margin-top: 20px;
-  }
 
 
