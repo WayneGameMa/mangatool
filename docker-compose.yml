@@ -1,0 +1,30 @@
+version: '3'
+services:
+  # Quasar-App-Container
+  frontend:
+    build:
+      context: ./mangatool
+    volumes:
+      - .:/opt/app
+      - /opt/app/node_modules
+    networks:
+      - manga-net
+    expose:
+      - 80
+    ports:
+      - 80:80
+  api:
+    build:
+      context: ./api
+    command: uvicorn api:app --host 0.0.0.0 --port 80
+    image: mangatool/api
+    restart: always
+    networks:
+      - manga-net
+    expose:
+      - 80
+    ports:
+      - 8000:80
+networks:
+  manga-net:
+    name: manga-net

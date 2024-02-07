@@ -85,7 +85,7 @@
         </template>
       </q-input>
 
-      <q-btn @click="updateTitleAndCards" class="menu__item">Einstellungen speichern</q-btn>
+      <q-btn @click="updateTitleAndCards(); save()" class="menu__item">Einstellungen speichern</q-btn>
     </div>
     <div>
     <p>Skizze: {{cards_sketch}} Ink: {{cards_ink}} Fertig: {{cards_fertig}}
@@ -199,29 +199,94 @@ export default defineComponent({
           this.cards.push('nothing')
         }
       }
-
-      // Speichere die Variablen im LocalStorage
-      localStorage.setItem('pageTitle', this.pageTitle);
-      localStorage.setItem('numberOfCards', this.numberOfCards.toString());
-      localStorage.setItem('minute_sketch', this.minute_sketch.toString());
-      localStorage.setItem('minute_ink', this.minute_inking.toString());
-      localStorage.setItem('minute_raster', this.minute_raster.toString());
-      localStorage.setItem('cards_sketch', this.cards_sketch.toString());
-      localStorage.setItem('cards_ink', this.cards_ink.toString());
-      localStorage.setItem('cards_fertig', this.cards_fertig.toString());
-      localStorage.setItem('cards', JSON.stringify(this.cards)); // Speichere das cards-Array als JSON-String
+      this.save()
     },
-    loadVariablesFromStorage() {
+    async save(){
+
+      document.title = this.pageTitle;
+      if (this.numberOfCards < this.cards.length){
+        this.cards = this.cards.slice(0, this.numberOfCards);
+      }
+
+      if (this.numberOfCards > this.cards.length){
+        const card_len = this.cards.length
+        for (let i = 0; i < this.numberOfCards - card_len; i++) {
+          this.cards.push('nothing')
+        }
+      }
+   
+      let bodyString =`
+                {
+                "Title": "${this.pageTitle}",
+                "NumberPages": ${this.numberOfCards},
+                "MinutesSketch": ${this.minute_sketch},
+                "MinutesInk": ${this.minute_inking},
+                "MinutesRaster": ${this.minute_raster},
+                "CardsSketch": ${this.cards_sketch},
+                "CardsInk": ${this.cards_ink},
+                "CardsRaster": ${this.cards_fertig},
+                "Cards": ${JSON.stringify(this.cards)},
+                "WeekDays": [${this.week_days}],
+                "StartTime": "${this.start_time}",
+                "EndTime": "${this.end_time}"
+              }
+              `;
+      console.log(bodyString)
+      let requestString =`http://localhost:8000/save`;
+        
+      // 👇️ const response: Response
+        
+      const response = await fetch(requestString,
+                  {
+                    method: "POST",
+                    headers: {
+                              mode: "cors",
+                              Accept: "application/json",
+                              "Content-Type": "application/json",
+                            },
+                    body: bodyString,
+                  });
+      if (!response.ok){
+        	consol.log("Fehler Network");
+        }
+
+      const feedback = (await response.json());
+   
+      //speichern
+
+    },
+    async loadVariablesFromStorage() {
+      let requestString =`http://localhost:8000/load`;
+        
+      // 👇️ const response: Response
+        
+      const response = await fetch(requestString,
+                  {
+                    method: "POST",
+                    headers: {
+                              mode: "cors",
+                              Accept: "application/json",
+                              "Content-Type": "application/json",
+                            },
+                  });
+      if (!response.ok){
+        	consol.log("Fehler Network");
+        }
+
+      const feedback = (await response.json());
       // Lade die Variablen vom LocalStorage, wenn sie vorhanden sind
-      const storedPageTitle = localStorage.getItem('pageTitle');
-      const storedNumberOfCards = localStorage.getItem('numberOfCards');
-      const storedCards = localStorage.getItem('cards');
-      const minute_sketch = localStorage.getItem('minute_sketch');
-      const minute_ink = localStorage.getItem('minute_ink');
-      const minute_raster = localStorage.getItem('minute_raster');
-      const cards_sketch = localStorage.getItem('cards_sketch');
-      const cards_ink = localStorage.getItem('cards_ink');
-      const cards_fertig = localStorage.getItem('cards_fertig');
+      const storedPageTitle = feedback.manga.Title;
+      const storedNumberOfCards = feedback.manga.NumberPages;
+      const storedCards = feedback.manga.Cards;
+      const minute_sketch = feedback.manga.MinutesSketch;
+      const minute_ink = feedback.manga.MinutesInk;
+      const minute_raster = feedback.manga.MinutesRaster;
+      const cards_sketch = feedback.manga.CardsSketch;
+      const cards_ink = feedback.manga.CardsInk;
+      const cards_fertig = feedback.manga.CardsRaster;
+      const week_days = feedback.manga.WeekDays; 
+      this.start_time = feedback.manga.StartTime;
+      this.end_time = feedback.manga.EndTime;
 
       if (storedPageTitle) {
         this.pageTitle = storedPageTitle;
@@ -251,7 +316,10 @@ export default defineComponent({
       }
 
       if (storedCards) {
-        this.cards = JSON.parse(storedCards); // Wiederherstellen des cards-Arrays aus dem JSON-String
+        this.cards = storedCards; // Wiederherstellen des cards-Arrays aus dem JSON-String
+      }
+      if (week_days) {
+        this.week_days = week_days; // Wiederherstellen des cards-Arrays aus dem JSON-String
       }
     },
   },
@@ -269,17 +337,20 @@ export default defineComponent({
       let totalTimeMinutes = (this.minute_sketch + this.minute_inking + this.minute_raster) * number;
       totalTimeMinutes += (this.minute_inking + this.minute_raster) * this.cards_sketch;
       totalTimeMinutes += (this.minute_raster) * this.cards_ink;
+      console.log(totalTimeMinutes);
 
       const workDurationMinutes = (endTimeDate.getHours() - startTimeDate.getHours()) * 60 + (endTimeDate.getMinutes() - startTimeDate.getMinutes());
 
       const work_percent = (workDurationMinutes / (24 * 60)) * (this.week_days.length / 7);
+      console.log(work_percent);
 
       totalTimeMinutes /= work_percent;
       console.log(totalTimeMinutes);
 
       let completionTime = currentDate.getTime() + (totalTimeMinutes * 60 * 1000)
+      let d = new Date(completionTime);
 
-      return `${new Date(completionTime).toDateString()} um ${new Date(completionTime).getHours()}:${new Date(completionTime).getMinutes()}`;
+      return `${d.toLocaleString('de',{timeZone:'Europe/Berlin', timeZoneName: 'long'})}`;
     }
   },
   created() {
