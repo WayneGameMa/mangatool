@@ -123,6 +123,7 @@ export default defineComponent({
   name: 'MangaPage',
   data() {
     return {
+      date: ref(""),
       pageTitle: ref('Title'), // Default-Titelseite
       numberOfCards: ref(0), // Standardanzahl von Karten
       minute_sketch: ref(30),
@@ -252,7 +253,7 @@ export default defineComponent({
 
       const feedback = (await response.json());
    
-      //speichern
+      this.update_date();
 
     },
     async loadVariablesFromStorage() {
@@ -321,10 +322,9 @@ export default defineComponent({
       if (week_days) {
         this.week_days = week_days; // Wiederherstellen des cards-Arrays aus dem JSON-String
       }
+      this.update_date();
     },
-  },
-  computed: {
-    date() {
+    update_date(){
       const startTimeArr = this.start_time.split(':').map(x => parseInt(x));
       const endTimeArr = this.end_time.split(':').map(x => parseInt(x));
       const startTimeDate = new Date();
@@ -350,8 +350,8 @@ export default defineComponent({
       let completionTime = currentDate.getTime() + (totalTimeMinutes * 60 * 1000)
       let d = new Date(completionTime);
 
-      return `${d.toLocaleString('de',{timeZone:'Europe/Berlin', timeZoneName: 'long'})}`;
-    }
+      this.date = `${d.toLocaleString('de',{timeZone:'Europe/Berlin', timeZoneName: 'long'})}`;
+    },
   },
   created() {
     // Lade die Variablen beim Laden der Seite
