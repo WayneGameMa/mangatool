@@ -232,7 +232,7 @@ export default defineComponent({
               }
               `;
       console.log(bodyString)
-      let requestString =`http://localhost:8000/save`;
+      let requestString =`http://${location.host}:8000/save`;
         
       // 👇️ const response: Response
         
@@ -256,7 +256,7 @@ export default defineComponent({
 
     },
     async loadVariablesFromStorage() {
-      let requestString =`http://localhost:8000/load`;
+      let requestString =`http://${location.host}:8000/load`;
         
       // 👇️ const response: Response
         
