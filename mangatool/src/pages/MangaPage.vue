@@ -324,7 +324,7 @@ export default defineComponent({
       }
       this.update_date();
     },
-    update_date(){
+    update_date () {
       const startTimeArr = this.start_time.split(':').map(x => parseInt(x));
       const endTimeArr = this.end_time.split(':').map(x => parseInt(x));
       const startTimeDate = new Date();
